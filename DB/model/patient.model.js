@@ -6,6 +6,9 @@ const patientSchema = new Schema({
   email: { type: String, required: true, unique: true, },
   confirmEmail: { type: Boolean, default: false },
   emailCode: { type: Number, default: null },
+  verifyEmail:{type:Boolean,default:false},
+  EmailPasswordCode:{type:Number,default:null},
+  
   //forgetCode: { type: Number, default: null },
  // heartbeat:{type:Number},
   //motionRate:{type:Number},
