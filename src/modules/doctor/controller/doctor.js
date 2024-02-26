@@ -18,8 +18,7 @@ export const signupDoctor = asyncHandler(async (req, res, next) => {
 
 
     const { firstName, lastName, clinicAddress, phone, specialization, email, password } = req.body
-    // console.log({ firstName,lastName,clinicAddress,phone,unionCard,certificate,specialization, email, password });
-    //check email exist
+     //check email exist
     const checkDoctor = await doctorModel.findOne({ email: email.toLowerCase() })
     if (checkDoctor) {
         //  return res.status(404).json({ message: "email exist", })
@@ -262,7 +261,6 @@ export const loginDoctor = asyncHandler(async (req, res, next) => {
 
 
     const { email, password } = req.body
-    console.log({ email, password });
     //check email exist
     const doctor = await doctorModel.findOne({ email: email.toLowerCase() })
     if (!doctor) {
@@ -425,7 +423,6 @@ export const confirmEmailDoctor = asyncHandler(async (req, res, next) => {
 
 export const sendCodeForgetPasswordDoctor = asyncHandler(async (req, res, next) => {
     const { email } = req.body
-    console.log(email);
     const doctor = await doctorModel.findOne({ email })
     if (!doctor) {
         return next(new Error('In-valid account', { cause: 400 }))

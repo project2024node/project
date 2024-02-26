@@ -149,7 +149,6 @@ export const loginPatient = async (req, res, next) => {
 
 
     const { email, password } = req.body
-    //console.log({ email, password });
     //check email exist
     const patient = await patientModel.findOne({ email: email.toLowerCase() })
     if (!patient) {
