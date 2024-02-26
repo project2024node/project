@@ -404,13 +404,139 @@ export const generateRefreshToken = asyncHandler(async (req, res, next) => {
     return res.status(200).send('<h1>New Confirmation Email have been to your inbox please check it asap</h1>')
 })
 
-export const updatePassword = asyncHandler(async (req, res, next) => {
-    const {  newPassword } = req.body
+//sendCode
+
+export const sendCodeForgetPasswordPatient = asyncHandler(async (req, res, next) => {
+    const { email } = req.body
+    const patient = await patientModel.findOne({ email })
+    if (!patient) {
+        return next(new Error('In-valid account', { cause: 400 }))
+    }
+    // if (doctor.forgetCode != forgetCode) {
+
+    const EmailPasswordCode = Math.floor(Math.random() * (9999 - 1000 + 1) + 1000)
+    const html = `<!DOCTYPE html>
+    <html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></head>
+    <style type="text/css">
+    body{
+        background-color: #88BDBF;margin: 0px;
+    }
+    </style>
+    <body style="margin:0px;"> 
+    <table border="0" width="50%" style="margin:auto;padding:30px;background-color: #F3F3F3;border:1px solid #630E2B;">
+    <tr>
+    <td>
+    <table border="0" width="100%">
+    <tr>
+    <td>
+    <h1>
+    care bracelet  
+    </h1>
+    </td>
+    <td>
     
-    const patient = await patientModel.findById(req.patient._id)
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <table border="0" cellpadding="0" cellspacing="0" style="text-align:center;width:100%;background-color: #fff;">
+    <tr>
+    <td style="background-color:#630E2B;height:100px;font-size:50px;color:#fff;">
+    <img width="50px" height="50px" src="https://res.cloudinary.com/ddajommsw/image/upload/v1670703716/Screenshot_1100_yne3vo.png">
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <h1 style="padding-top:25px; color:#630E2B">check your email</h1>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p style="padding:0px 100px;">
+    </p>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <p style="margin:10px 0px 30px 0px;border-radius:4px;padding:10px 20px;border: 0;color:#fff;background-color:#630E2B; ">${EmailPasswordCode}</p>
+    </td>
+    </tr>
+    
+    </table>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <table border="0" width="100%" style="border-radius: 5px;text-align: center;">
+    <tr>
+    <td>
+    <h3 style="margin-top:10px; color:#000">verify code</h3>
+    </td>
+    </tr>
+    <tr>
+    <td>
+    <div style="margin-top:20px;">
+
+    </div>
+    </td>
+    </tr>
+    </table>
+    </td>
+    </tr>
+    </table>
+    </body>
+    </html>`
+
+    if (!await sendEmail({ to: email, subject: 'confirmation-email', html })) {
+
+        return next(new Error(`fail to send this email`, { cause: 400 }))
+        //   return res.status(400).json({ message: "fail to send email"})
+
+
+    }
+    patient.EmailPasswordCode = EmailPasswordCode;
+    
+    await patient.save()
+
+    return res.status(200).json({ message: "Done" })
+})
+
+//check your email verifyCode forgetPassword
+export const CodeForgetPasswordPatient = asyncHandler(async (req, res, next) => {
+    const { email, EmailPasswordCode } = req.body
+
+    const patient = await patientModel.findOne({ email })
+    if (!patient) {
+        return next(new Error('In-valid account', { cause: 400 }))
+    }
+    // if (doctor.emailCode != emailCode) {
+
+    if (patient.EmailPasswordCode !== parseInt(EmailPasswordCode)) {
+        return next(new Error('In-valid reset code', { cause: 400 }))
+    }
+    patient.EmailPasswordCode = null;
+
+    patient.verifyEmail = true
+    await patient.save()
+
+    return res.status(200).json({ message: "Done" })
+})
+
+
+
+export const updatePassword = asyncHandler(async (req, res, next) => {
+    const {  email,newPassword,cNewPassword}= req.body
+    
+    const patient = await patientModel.findOne({email})
 
     const hashPassword = hash({ plaintext: newPassword })
     patient.password = hashPassword;
     await patient.save();
     return res.status(200).json({ message: "Done" })
-})
+}
+)

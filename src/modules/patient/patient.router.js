@@ -34,6 +34,17 @@ patientController.sendCodeEmail)
 
 
 
+router.put("/sendCodeForgetPasswordPatient",
+validation(validators.sendCodeForgetPasswordPatient),
+patientController.sendCodeForgetPasswordPatient)
+
+
+router.put("/CodeForgetPassword",
+validation(validators.CodeForgetPasswordPatient),
+patientController.CodeForgetPasswordPatient)
+
+
+
 router.patch("/updateForgetPasswordPatient",
 validation(validators.updateForgetPassword),
 

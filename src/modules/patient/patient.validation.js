@@ -42,13 +42,7 @@ export const sendCodeEmail = joi.object({
 
 }).required()
 
-export const forgetPassword = joi.object({
-    forgetCode: joi.string().pattern(new RegExp(/^[0-9]{4}$/)).required(),
-    email: generalFields.email,
-    password: generalFields.password,
-    cPassword: generalFields.cPassword.valid(joi.ref("password")),
 
-}).required()
 
 export const token = joi.object({
 
@@ -56,9 +50,25 @@ export const token = joi.object({
 }).required()
 
 
-export const updateForgetPassword = joi.object({
+export const CodeForgetPasswordPatient = joi.object({
+
     
-    newPassword: generalFields.password.invalid(joi.ref("oldPassword")),
-    cPassword: generalFields.cPassword.valid(joi.ref("newPassword")),
+    email: generalFields.email,
+ 
+     EmailPasswordCode:joi.string().pattern(new RegExp(/^[0-9]{4}$/)).required(),
+ 
+ }).required()
+ 
+export const sendCodeForgetPasswordPatient= joi.object({
+    email: generalFields.email,
+   
+}).required()
+
+
+
+export const updateForgetPassword = joi.object({
+    email: generalFields.email,
+    newPassword: generalFields.password,
+    cNewPassword: generalFields.password.valid(joi.ref("newPassword")),
  
 }).required()
